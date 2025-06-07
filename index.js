@@ -1,5 +1,6 @@
 const { Telegraf, Markup } = require("telegraf");
 const { searchEztvx } = require("./utils/eztvx");
+const { searchPirateBay, searchPiratebay } = require("./utils/piratebay");
 require("dotenv").config();
 
 const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN);
@@ -53,7 +54,7 @@ bot.on("text", async (ctx) => {
 
 async function progressiveSearch(ctx, userId, showName) {
     try {
-        const torrentStream = searchEztvx(showName);
+        const torrentStream = searchPiratebay(showName);
         
         for await (const newTorrents of torrentStream) {
             // Check if user requested to stop
@@ -89,6 +90,7 @@ async function updateResultsMessage(ctx, userId, isFinal = false) {
 
     const { torrents, currentPage, isSearching, searchTerm, searchStartTime } = session;
     const totalItems = torrents.length;
+    console.log("🚀 ~ updateResultsMessage ~ totalItems:", totalItems)
     const totalPages = Math.ceil(totalItems / CHUNK_SIZE);
     const startIdx = currentPage * CHUNK_SIZE;
     const endIdx = Math.min(startIdx + CHUNK_SIZE, totalItems);
